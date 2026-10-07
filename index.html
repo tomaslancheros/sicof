@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SICOF | Compra sin filas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <a href="#inicio" class="logo">🛒 <span>SICOF</span></a>
+    <nav>
+      <a href="#inicio" class="activo">Inicio</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#beneficios">Beneficios</a>
+      <a href="#productos">Productos</a>
+      <a href="#faq">Preguntas frecuentes</a>
+    </nav>
+    <div class="nav-acciones">
+      <a href="#productos" class="link-carrito">Carrito (<span id="contadorCarrito">0</span>)</a>
+      <a href="#" class="btn" id="btnRegistro">Registrarse</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-texto">
+        <small class="marca">SICOF</small>
+        <h1>Compra sin filas, <span>vive la experiencia SICOF</span></h1>
+        <p>La plataforma web que te permite comprar en el supermercado de forma rápida, segura y sin filas. Selecciona, paga y recibe tu código QR para salir sin esperas.</p>
+        <a href="#productos" class="btn">Comenzar ahora →</a>
+      </div>
+      <div class="telefono">
+        <div class="pantalla">
+          <strong>SICOF</strong>
+          <small>Compras sin filas</small>
+          <div class="qr">QR</div>
+          <span class="btn btn-sm">Tu código QR</span>
+        </div>
+      </div>
+      <p class="hero-lema">Más tiempo para lo que importa</p>
+    </section>
+
+    <section class="seccion" id="como-funciona">
+      <small class="marca">¿Cómo funciona?</small>
+      <h2>Es muy fácil</h2>
+      <div class="pasos-wrap">
+        <ol class="pasos">
+          <li><span>1</span><b>Regístrate</b><p>Crea tu cuenta en segundos.</p></li>
+          <li><span>2</span><b>Elige tus productos</b><p>Escanea o selecciona en la web.</p></li>
+          <li><span>3</span><b>Añade al carrito</b><p>Revisa tu compra y continúa.</p></li>
+          <li><span>4</span><b>Paga en línea</b><p>Usa tus medios de pago favoritos.</p></li>
+          <li><span>5</span><b>Recibe tu QR</b><p>Preséntalo en la salida sin esperar.</p></li>
+        </ol>
+        <aside class="destacado">
+          <h3>Ahorra tiempo, disfruta más</h3>
+          <p>SICOF facilita tus compras para que puedas dedicar tu tiempo a lo que realmente importa.</p>
+          <a href="#como-funciona" class="btn btn-claro">Ver cómo funciona →</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="franja" id="beneficios">
+      <div><b>+ Sin filas</b><p>Evita esperas en caja.</p></div>
+      <div><b>+ Seguro</b><p>Tus datos y pagos protegidos.</p></div>
+      <div><b>+ Rápido</b><p>Compra en pocos minutos.</p></div>
+      <div><b>+ Desde cualquier lugar</b><p>Usa la web desde celular o computador.</p></div>
+      <div><b>+ Mejora tu experiencia</b><p>Un supermercado más moderno.</p></div>
+    </section>
+
+    <!-- CRUD DE PRODUCTOS -->
+    <section class="seccion" id="productos">
+      <small class="marca">Gestión del supermercado</small>
+      <h2>Elije tus Productos</h2>
+
+      <form id="formProducto" class="form-crud" autocomplete="off">
+        <input type="hidden" id="productoId">
+        <label>Nombre
+          <input type="text" id="nombre" required placeholder="Ej: Leche entera 1L">
+        </label>
+        <label>Categoría
+          <select id="categoria" required>
+            <option value="">Selecciona</option>
+            <option>Lácteos</option>
+            <option>Frutas y verduras</option>
+            <option>Carnes</option>
+            <option>Panadería</option>
+            <option>Bebidas</option>
+            <option>Aseo</option>
+            <option>Otros</option>
+          </select>
+        </label>
+        <label>Precio (cop)
+          <input type="number" id="precio" min="0" step="50" required placeholder="Ej:4500">
+        </label>
+        <label>cantidad
+          <input type="number" id="cantidad" min="0" step="1" required placeholder="0">
+        </label>
+        <div class="form-botones">
+          <button type="submit" class="btn" id="btnGuardar">Agregar producto</button>
+          <button type="button" class="btn btn-claro" id="btnCancelar" hidden>Cancelar</button>
+        </div>
+      </form>
+
+      <input type="search" id="buscador" class="buscador" placeholder="Buscar producto o categoría...">
+
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Cantidad</th></tr>
+          </thead>
+          <tbody id="tablaProductos"></tbody>
+        </table>
+        <p id="vacio" class="vacio" hidden>No hay productos. Agrega el primero con el formulario.</p>
+      </div>
+    </section>
+
+    <section class="seccion" id="faq">
+      <small class="marca">Todo lo que necesitas saber</small>
+      <h2>Conoce más sobre SICOF</h2>
+      <div class="tarjetas">
+        <a href="#beneficios" class="tarjeta"><b>+ Beneficios</b><p>Descubre por qué SICOF es una mejor opción para ti.</p></a>
+        <a href="#como-funciona" class="tarjeta"><b>+ Funciones</b><p>Todo lo que puedes hacer en nuestra plataforma.</p></a>
+        <a href="#" class="tarjeta"><b>+ Seguridad</b><p>Tu información y pago siempre protegidos.</p></a>
+        <a href="#faq" class="tarjeta"><b>+ Preguntas frecuentes</b><p>Resuelve tus dudas aquí.</p></a>
+        <a href="#" class="tarjeta"><b>+ Sobre nosotros</b><p>Conoce más de nuestro proyecto y propósito.</p></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="logo-footer">🛒 <div><strong>SICOF</strong><small>Compras sin filas</small></div></div>
+    <nav>
+      <a href="#">Términos y condiciones</a>
+      <a href="#">Política de privacidad</a>
+      <a href="#">Contacto</a>
+    </nav>
+    <div class="redes">
+      <a href="#">Facebook</a><a href="#">Instagram</a><a href="#">X</a><a href="#">TikTok</a><a href="#">YouTube</a>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
