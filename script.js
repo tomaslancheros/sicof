@@ -93,30 +93,39 @@ const formatoCOP = new Intl.NumberFormat("es-CO", {
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const datos = {
-    nombre: inputNombre.value.trim(),
-    categoria: inputCategoria.value,
-    precio: parseFloat(inputPrecio.value),
-    stock: parseInt(inputStock.value, 10),
-  };
+  const nombre = inputNombre.value.trim();
+  const categoria = inputCategoria.value;
+  const precio = Number(inputPrecio.value);
+  const stock = Number(inputStock.value);
 
-  if (!datos.nombre || isNaN(datos.precio) || isNaN(datos.stock)) {
-    aviso("Completa todos los campos con valores válidos");
+  if (!nombre || !categoria || inputPrecio.value === "" ||
+      inputStock.value === "" || precio < 0 || stock < 0 ||
+      !Number.isFinite(precio) || !Number.isInteger(stock)) {
+    aviso("Completa todos los campos correctamente");
     return;
   }
 
+  const datos = { nombre, categoria, precio, stock };
+
   if (inputId.value) {
-    // UPDATE
     const id = Number(inputId.value);
-    productos = productos.map((p) => (p.id === id ? { ...p, ...datos } : p));
-    aviso("Producto actualizado");
+    productos = productos.map(p =>
+      p.id === id ? { ...p, ...datos } : p
+    );
+    aviso("Producto actualizado correctamente");
   } else {
-    // CREATE
-    const nuevoId = productos.length ? Math.max(...productos.map((p) => p.id)) + 1 : 1;
+    const nuevoId = productos.length
+      ? Math.max(...productos.map(p => p.id)) + 1
+      : 1;
+
     productos.push({ id: nuevoId, ...datos });
-    aviso("Producto agregado");
+    aviso("Producto agregado correctamente");
   }
 
+  guardar();
+  limpiarFormulario();
+  mostrar();
+});
   guardar();
   limpiarFormulario();
   mostrar();
