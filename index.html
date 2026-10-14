@@ -141,7 +141,57 @@
     </div>
   </footer>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+ <!-- Ventana de registro de clientes -->
+<div id="modalRegistro" class="modal-registro" hidden>
+  <div class="registro-contenido">
+    <button type="button" id="cerrarRegistro"
+            class="cerrar-modal" aria-label="Cerrar">
+      &times;
+    </button>
+
+    <div class="registro-logo">🛒 SICOF</div>
+
+    <h2>Crear cuenta</h2>
+    <p>Regístrate como cliente y disfruta tus compras sin filas.</p>
+
+    <form id="formRegistro" autocomplete="on">
+      <label for="registroNombre">Nombre completo</label>
+      <input type="text" id="registroNombre"
+             placeholder="Tu nombre completo"
+             autocomplete="name" required>
+
+      <label for="registroCorreo">Correo electrónico</label>
+      <input type="email" id="registroCorreo"
+             placeholder="correo@ejemplo.com"
+             autocomplete="email" required>
+
+      <label for="registroTelefono">Teléfono</label>
+      <input type="tel" id="registroTelefono"
+             placeholder="Tu número de celular"
+             autocomplete="tel" required>
+
+      <label for="registroPassword">Contraseña</label>
+      <input type="password" id="registroPassword"
+             placeholder="Mínimo 8 caracteres"
+             minlength="8" autocomplete="new-password" required>
+
+      <label for="registroConfirmar">Confirmar contraseña</label>
+      <input type="password" id="registroConfirmar"
+             placeholder="Repite tu contraseña"
+             minlength="8" autocomplete="new-password" required>
+
+      <button type="submit" class="btn btn-registro">
+        Crear cuenta
+      </button>
+
+      <p class="registro-pie">
+        ¿Ya tienes una cuenta?
+        <button type="button" id="irRegistro"
+                class="enlace-registro">Cerrar</button>
+      </p>
+    </form>
+  </div>
+</div>
   <script src="script.js"></script>
 </body>
 </html>
