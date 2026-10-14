@@ -189,106 +189,225 @@ tabla.addEventListener("click", (e) => {
 
 buscador.addEventListener("input", mostrar);
 
-// ===== REGISTRO DE CLIENTES SICOF =====
 
-const modalRegistro = document.getElementById("modalRegistro");
-const formRegistro = document.getElementById("formRegistro");
+/* ==========================================
+   SICOF - REGISTRO DE CLIENTES
+   Apertura, validación y guardado de usuarios
+   ========================================== */
 
-const clientes = cargar("sicof_clientes", []);
+(() => {
+  "use strict";
 
-const nombreCliente = document.getElementById("registroNombre");
-const correoCliente = document.getElementById("registroCorreo");
-const telefonoCliente = document.getElementById("registroTelefono");
-const passwordCliente = document.getElementById("registroPassword");
-const confirmarCliente = document.getElementById("registroConfirmar");
+  // Elementos del formulario HTML
+  const botonRegistro = document.getElementById("btnRegistro");
+  const modalRegistro = document.getElementById("modalRegistro");
+  const botonCerrar = document.getElementById("cerrarRegistro");
+  const botonCancelar = document.getElementById("cancelarRegistro");
+  const formulario = document.getElementById("formRegistro");
 
-function abrirRegistro() {
-  modalRegistro.hidden = false;
-  nombreCliente.focus();
-}
+  const campoNombre = document.getElementById("registroNombre");
+  const campoCorreo = document.getElementById("registroCorreo");
+  const campoTelefono = document.getElementById("registroTelefono");
+  const campoPassword = document.getElementById("registroPassword");
+  const campoConfirmar = document.getElementById("registroConfirmar");
+  const mensaje = document.getElementById("mensajeRegistro");
 
-function cerrarRegistro() {
-  modalRegistro.hidden = true;
-  formRegistro.reset();
-}
+  const CLAVE_CLIENTES = "sicof_clientes";
 
-document.getElementById("btnRegistro").addEventListener("click", (e) => {
-  e.preventDefault();
-  abrirRegistro();
-});
-
-document.getElementById("cerrarRegistro")
-  .addEventListener("click", cerrarRegistro);
-
-document.getElementById("irRegistro")
-  .addEventListener("click", cerrarRegistro);
-
-modalRegistro.addEventListener("click", (e) => {
-  if (e.target === modalRegistro) {
-    cerrarRegistro();
-  }
-});
-
-formRegistro.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const nombre = nombreCliente.value.trim();
-  const correo = correoCliente.value.trim().toLowerCase();
-  const telefono = telefonoCliente.value.trim();
-  const password = passwordCliente.value;
-  const confirmar = confirmarCliente.value;
-
-  if (!nombre || !correo || !telefono || !password || !confirmar) {
-    aviso("Completa todos los campos");
-    return;
-  }
-
-  if (password.length < 8) {
-    aviso("La contraseña debe tener mínimo 8 caracteres");
-    return;
-  }
-
-  if (password !== confirmar) {
-    aviso("Las contraseñas no coinciden");
-    return;
-  }
-
-  const correoExiste = clientes.some(
-    cliente => cliente.correo === correo
-  );
-
-  if (correoExiste) {
-    aviso("Este correo ya está registrado");
-    return;
-  }
-
-  // Se guarda el perfil básico del cliente.
-  // La contraseña no se guarda en el navegador.
-  const nuevoCliente = {
-    id: Date.now(),
-    nombre,
-    correo,
-    telefono,
-    rol: "Cliente",
-    fechaRegistro: new Date().toISOString()
-  };
-
-  clientes.push(nuevoCliente);
-
-  try {
-    localStorage.setItem(
-      "sicof_clientes",
-      JSON.stringify(clientes)
+  // Evitar errores si falta algún elemento del HTML
+  if (
+    !botonRegistro ||
+    !modalRegistro ||
+    !botonCerrar ||
+    !botonCancelar ||
+    !formulario ||
+    !campoNombre ||
+    !campoCorreo ||
+    !campoTelefono ||
+    !campoPassword ||
+    !campoConfirmar ||
+    !mensaje
+  ) {
+    console.error(
+      "SICOF: No se encontró algún elemento del registro. Revisa los IDs del HTML."
     );
-  } catch (error) {
-    clientes.pop();
-    aviso("No se pudieron guardar los datos");
     return;
   }
 
-  cerrarRegistro();
-  aviso("¡Registro exitoso! Bienvenido a SICOF");
-});
-});
+  // Obtener los clientes guardados
+  function obtenerClientes() {
+    try {
+      const datos = localStorage.getItem(CLAVE_CLIENTES);
 
+      if (!datos) {
+        return [];
+      }
+
+      const clientes = JSON.parse(datos);
+
+      if (!Array.isArray(clientes)) {
+        console.error("SICOF: Los datos de clientes no son válidos.");
+        return null;
+      }
+
+      return clientes;
+    } catch (error) {
+      console.error("Error al leer los clientes:", error);
+      return null;
+    }
+  }
+
+  // Mostrar mensajes dentro del formulario
+  function mostrarMensaje(texto, exito = false) {
+    mensaje.textContent = texto;
+    mensaje.classList.toggle("exito", exito);
+  }
+
+  // Abrir la ventana de registro
+  function abrirRegistro(evento) {
+    if (evento) {
+      evento.preventDefault();
+    }
+
+    modalRegistro.hidden = false;
+    modalRegistro.style.display = "grid";
+    mostrarMensaje("");
+
+    campoNombre.focus();
+  }
+
+  // Cerrar y limpiar el formulario
+  function cerrarRegistro() {
+    modalRegistro.hidden = true;
+    modalRegistro.style.display = "none";
+    formulario.reset();
+    mostrarMensaje("");
+  }
+
+  // Conectar el botón Registrarse
+  botonRegistro.addEventListener("click", abrirRegistro);
+
+  // Conectar los botones para cerrar
+  botonCerrar.addEventListener("click", cerrarRegistro);
+  botonCancelar.addEventListener("click", cerrarRegistro);
+
+  // Cerrar al pulsar fuera de la ventana
+  modalRegistro.addEventListener("click", function (evento) {
+    if (evento.target === modalRegistro) {
+      cerrarRegistro();
+    }
+  });
+
+  // Cerrar con la tecla Escape
+  document.addEventListener("keydown", function (evento) {
+    if (evento.key === "Escape" && !modalRegistro.hidden) {
+      cerrarRegistro();
+    }
+  });
+
+  // Procesar el registro
+  formulario.addEventListener("submit", function (evento) {
+    evento.preventDefault();
+    mostrarMensaje("");
+
+    const nombre = campoNombre.value.trim();
+    const correo = campoCorreo.value.trim().toLowerCase();
+    const telefono = campoTelefono.value.trim();
+    const password = campoPassword.value;
+    const confirmar = campoConfirmar.value;
+
+    // Validar campos vacíos
+    if (!nombre || !correo || !telefono || !password || !confirmar) {
+      mostrarMensaje("Por favor, completa todos los campos.");
+      return;
+    }
+
+    // Validar correo
+    const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!patronCorreo.test(correo)) {
+      mostrarMensaje("Escribe un correo electrónico válido.");
+      campoCorreo.focus();
+      return;
+    }
+
+    // Validar contraseña
+    if (password.length < 8) {
+      mostrarMensaje("La contraseña debe tener mínimo 8 caracteres.");
+      campoPassword.focus();
+      return;
+    }
+
+    // Confirmar contraseña
+    if (password !== confirmar) {
+      mostrarMensaje("Las contraseñas no coinciden.");
+      campoConfirmar.focus();
+      return;
+    }
+
+    // Consultar clientes existentes
+    const clientes = obtenerClientes();
+
+    if (clientes === null) {
+      mostrarMensaje("No se pudieron consultar los registros guardados.");
+      return;
+    }
+
+    // Evitar registrar el mismo correo dos veces
+    const correoExiste = clientes.some(function (cliente) {
+      return String(cliente.correo || "").toLowerCase() === correo;
+    });
+
+    if (correoExiste) {
+      mostrarMensaje("Este correo ya está registrado.");
+      campoCorreo.focus();
+      return;
+    }
+
+    // Crear el nuevo cliente
+    const nuevoCliente = {
+      id: Date.now(),
+      nombre: nombre,
+      correo: correo,
+      telefono: telefono,
+      rol: "Cliente",
+      fechaRegistro: new Date().toISOString()
+    };
+
+    // Guardar el cliente
+    try {
+      clientes.push(nuevoCliente);
+
+      localStorage.setItem(
+        CLAVE_CLIENTES,
+        JSON.stringify(clientes)
+      );
+
+      mostrarMensaje("¡Registro exitoso! Tu cuenta fue creada.", true);
+
+      formulario.reset();
+
+      // Cerrar la ventana después de mostrar el mensaje
+      setTimeout(function () {
+        cerrarRegistro();
+
+        // Mostrar aviso si el proyecto ya tiene esta función
+        if (typeof window.aviso === "function") {
+          window.aviso("¡Bienvenido a SICOF! Registro exitoso.");
+        }
+      }, 1200);
+
+    } catch (error) {
+      console.error("Error al guardar el cliente:", error);
+      mostrarMensaje(
+        "No se pudieron guardar los datos. Revisa el almacenamiento del navegador."
+      );
+    }
+  });
+
+  // Asegurar que la ventana empiece cerrada
+  modalRegistro.hidden = true;
+  modalRegistro.style.display = "none";
+
+})();
 mostrar();
